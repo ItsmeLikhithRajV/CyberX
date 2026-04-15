@@ -1,4 +1,6 @@
-🚀 CyberX – Automated Reconnaissance Framework
+# CyberX 🚀
+
+```
    ______      __                __  __
   / ____/___  / /_  ____  ____  / /_/ /
  / /   / __ \/ __ \/ __ \/ __ \/ __/ / 
@@ -6,114 +8,130 @@
 \____/\____/_.___/\____/\____/\__/_/   
 
         CYBERX RECON FRAMEWORK
-🧠 Overview
+```
 
-CyberX is a lightweight, automated reconnaissance pipeline designed for bug bounty hunters and security researchers.
+---
 
-It chains multiple industry-standard tools into a structured workflow, ensuring that each step feeds into the next — eliminating noise and improving efficiency.
+## 🧠 Overview
 
-🔗 Pipeline Flow
+CyberX is a lightweight automated reconnaissance framework designed for bug bounty hunters and security researchers.
+
+It connects multiple tools into a **structured pipeline**, ensuring clean and efficient scanning.
+
+---
+
+## 🔗 Workflow
+
+```
 Subdomain Enumeration
         ↓
-Merge & Deduplicate
+Merge & Clean
         ↓
-Alive Domain Detection
+Alive Domains
         ↓
-Port Scanning
+Port Scan
         ↓
 Technology Detection
         ↓
 JS Collection
         ↓
 Screenshots + WAF Detection
-⚡ Features
-🔗 Chained Workflow – Each stage feeds the next (no wasted scans)
-⚡ Fast & Efficient – Only scans alive targets
-🧼 Clean Output Structure
-🧠 Beginner-Friendly + Pro-Level Design
-🛠️ Uses top recon tools in one pipeline
-🧰 Tools Used
+```
 
-CyberX integrates:
+---
 
-assetfinder
-amass
-subfinder
-httprobe
-naabu
-gau
-gowitness
-whatweb
-wafw00f
-📦 Installation
-1. Clone the repository
+## ⚡ Features
+
+* 🔗 Chained pipeline (no wasted scans)
+* ⚡ Fast execution using alive targets only
+* 🧼 Clean output structure
+* 🛠️ Uses industry-standard tools
+
+---
+
+## 🧰 Tools Used
+
+* assetfinder
+* amass
+* subfinder
+* httprobe
+* naabu
+* gau
+* gowitness
+* whatweb
+* wafw00f
+
+---
+
+## 📦 Installation
+
+Clone the repo:
+
+```
 git clone https://github.com/yourusername/cyberx.git
 cd cyberx
-2. Install dependencies
+```
 
-Make sure all required tools are installed:
+Install dependencies:
 
+```
 go install github.com/tomnomnom/assetfinder@latest
 go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
 go install github.com/projectdiscovery/naabu/v2/cmd/naabu@latest
 go install github.com/lc/gau/v2/cmd/gau@latest
+```
 
-Also install:
-
+```
 sudo apt install amass httprobe whatweb wafw00f
-🚀 Usage
-🔹 Scan a single domain
+```
+
+---
+
+## 🚀 Usage
+
+### Single Target
+
+```
 ./cyberx.sh -t example.com
-🔹 Scan multiple domains
+```
+
+### Multiple Targets
+
+```
 ./cyberx.sh -l domains.txt
-📁 Output Structure
+```
+
+---
+
+## 📁 Output
+
+```
 cyberx_output/
-└── example.com/
+└── target.com/
     ├── subdomains/
-    │   ├── final.txt
     ├── httprobe/
-    │   ├── alive.txt
     ├── scans/
-    │   ├── ports.txt
     ├── tech/
-    │   ├── tech.txt
     ├── gau/
-    │   ├── js.txt
     ├── screenshots/
-    ├── waf/
-    │   ├── waf.txt
-🧪 Example Workflow
-./cyberx.sh -t example.com
+    └── waf/
+```
 
-✔ Finds subdomains
-✔ Filters alive domains
-✔ Scans ports
-✔ Detects technologies
-✔ Collects JS files
-✔ Captures screenshots
-✔ Identifies WAF
+---
 
-⚠️ Disclaimer
+## ⚠️ Disclaimer
 
-CyberX is intended for educational purposes and authorized testing only.
+For educational and authorized testing only.
+Do not scan targets without permission.
 
-Do not use this tool on systems without proper permission.
+---
 
-👨‍💻 Author
-Developed by You
-Inspired by modern bug bounty workflows
-🌟 Future Improvements
-🔥 Parallel execution (faster scans)
-📊 HTML report generation
-🧠 Vulnerability detection modules
-💾 Resume scan capability
-⭐ Support
+## 👨‍💻 Author
 
-If you like this project:
+Built by you.
 
-⭐ Star the repo
-🍴 Fork it
-🛠️ Contribute
-💬 Final Note
+---
 
-CyberX is not just a script — it’s a structured recon workflow built to think like a hacker.
+## ⭐ Support
+
+If you like this project, give it a star ⭐
