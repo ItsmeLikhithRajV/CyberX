@@ -1,0 +1,137 @@
+#!/bin/bash
+
+cat << "EOF"
+
+ ██████╗██╗   ██╗██████╗ ███████╗██████╗ ██╗  ██╗
+██╔════╝╚██╗ ██╔╝██╔══██╗██╔════╝██╔══██╗╚██╗██╔╝
+██║      ╚████╔╝ ██████╔╝█████╗  ██████╔╝ ╚███╔╝ 
+██║       ╚██╔╝  ██╔══██╗██╔══╝  ██╔══██╗ ██╔██╗ 
+╚██████╗   ██║   ██████╔╝███████╗██║  ██║██╔╝ ██╗
+ ╚═════╝   ╚═╝   ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝                                             
++------------------------------------------------+
+|         Author : @LikhithRajV                  |
++------------------------------------------------+
+
+EOF
+
+# Help
+display_help() {
+    echo "Usage: $0 -t domain.com OR -l domains.txt"
+    exit 1
+}
+
+[ $# -eq 0 ] && display_help
+
+# Args
+target=""
+list=""
+
+while [[ "$#" -gt 0 ]]; do
+    case $1 in
+        -t|--target) target="$2"; shift ;;
+        -l|--list) list="$2"; shift ;;
+        *) display_help ;;
+    esac
+    shift
+done
+
+# Output dir
+SCRIPT_NAME=$(basename "$0" .sh)
+OUTPUT="${SCRIPT_NAME}_output"
+
+# Tools check
+TOOLS=("assetfinder" "amass" "subfinder" "httprobe" "naabu" "gau" "gowitness" "whatweb" "wafw00f")
+
+for tool in "${TOOLS[@]}"; do
+    command -v $tool >/dev/null 2>&1 || { echo "$tool not installed"; exit 1; }
+done
+
+# Create structure
+setup_dirs() {
+    domain=$1
+    mkdir -p "$OUTPUT/$domain"/{subdomains,httprobe,scans,gau,screenshots,tech,waf}
+}
+
+# 🔗 MAIN PIPELINE FUNCTION
+run_pipeline() {
+    domain=$1
+    echo "======================================"
+    echo " Target: $domain"
+    echo "======================================"
+
+    cd "$OUTPUT/$domain" || exit
+
+    SUBS="subdomains/final.txt"
+    ALIVE="httprobe/alive.txt"
+    JS="gau/js.txt"
+
+    echo "[1] Subdomain Discovery..."
+
+    assetfinder "$domain" > subdomains/assetfinder.txt
+    amass enum -d "$domain" > subdomains/amass.txt
+    subfinder -d "$domain" > subdomains/subfinder.txt
+
+    cat subdomains/*.txt | sort -u > subdomains/all.txt
+    cat subdomains/all.txt | grep "$domain" | sort -u > "$SUBS"
+
+    echo "✔ Subdomains collected → $SUBS"
+
+    echo "[2] Alive Check..."
+
+    cat "$SUBS" | httprobe -s -p http:81 -p https:443 \
+        | sed 's/https\?:\/\///' \
+        | sort -u > "$ALIVE"
+
+    echo "✔ Alive domains → $ALIVE"
+
+    echo "[3] Port Scanning..."
+
+    naabu -list "$ALIVE" -top-ports 1000 -o scans/ports.txt
+
+    echo "✔ Ports scanned"
+
+    echo "[4] Technology Detection..."
+
+    whatweb -i "$ALIVE" > tech/tech.txt
+
+    echo "✔ Tech detected"
+
+    echo "[5] JS Collection..."
+
+    cat "$ALIVE" | gau | grep "\.js" | sort -u > "$JS"
+
+    echo "✔ JS files → $JS"
+
+    echo "[6] Screenshots..."
+
+    gowitness file "$ALIVE" -d screenshots/ > /dev/null 2>&1
+
+    echo "✔ Screenshots captured"
+
+    echo "[7] WAF Detection..."
+
+    wafw00f -i "$ALIVE" > waf/waf.txt
+
+    echo "✔ WAF detection done"
+
+    cd - >/dev/null || exit
+
+    echo "✅ COMPLETED: $domain"
+    echo
+}
+
+# Single or multiple
+if [ -n "$target" ]; then
+    setup_dirs "$target"
+    run_pipeline "$target"
+elif [ -n "$list" ]; then
+    while read -r domain; do
+        setup_dirs "$domain"
+        run_pipeline "$domain"
+    done < "$list"
+fi
+
+echo "======================================"
+echo " ALL TASKS COMPLETED 🚀"
+echo " Output: $OUTPUT/"
+echo "======================================"
