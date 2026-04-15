@@ -132,6 +132,16 @@ Built by you.
 
 ---
 
+## 🙌 Credits
+
+This project is built upon the original ReconX framework developed by Sakibul Ali Khan.
+
+CyberX introduces improvements in pipeline structuring, output chaining, and performance optimization while preserving the core reconnaissance logic.
+
+Full credit goes to the original author for the base implementation.
+
+---
+
 ## ⭐ Support
 
 If you like this project, give it a star ⭐
